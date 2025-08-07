@@ -2,12 +2,21 @@
 
 # This script sets various Google Cloud related environment variables.
 # It must be SOURCED to make the variables available in your current shell.
+<<<<<<< HEAD
 # Example: source ./set_env.sh
 
 # --- Configuration ---
 PROJECT_FILE="~/project_id.txt"
 # This base name is for other workshops; Summoner's variables are defined below.
 export REPO_NAME="agentverse-repo"
+=======
+# Example: source ./set_gcp_env.sh
+
+# --- Configuration ---
+PROJECT_FILE="~/project_id.txt"
+GOOGLE_CLOUD_LOCATION="us-central1"
+REPO_NAME="agentverse-repo"
+>>>>>>> c8631520f1893f927bba9dd15aadcf121658a045
 # ---------------------
 
 
@@ -15,33 +24,64 @@ echo "--- Setting Google Cloud Environment Variables ---"
 
 # --- Authentication Check ---
 echo "Checking gcloud authentication status..."
+<<<<<<< HEAD
+=======
+# Run a command that requires authentication (like listing accounts or printing a token)
+# Redirect stdout and stderr to /dev/null so we don't see output unless there's a real error
+>>>>>>> c8631520f1893f927bba9dd15aadcf121658a045
 if gcloud auth print-access-token > /dev/null 2>&1; then
   echo "gcloud is authenticated."
 else
   echo "Error: gcloud is not authenticated."
   echo "Please log in by running: gcloud auth login"
+<<<<<<< HEAD
+=======
+  # Use 'return 1' instead of 'exit 1' because the script is meant to be sourced.
+  # 'exit 1' would close your current terminal session.
+>>>>>>> c8631520f1893f927bba9dd15aadcf121658a045
   return 1
 fi
 # --- --- --- --- --- ---
 
+<<<<<<< HEAD
 # 1. Check if project file exists
 PROJECT_FILE_PATH=$(eval echo $PROJECT_FILE)
 if [ ! -f "$PROJECT_FILE_PATH" ]; then
   echo "Error: Project file not found at $PROJECT_FILE_PATH"
   echo "Please create $PROJECT_FILE_PATH containing your Google Cloud project ID."
   return 1
+=======
+
+# 1. Check if project file exists
+PROJECT_FILE_PATH=$(eval echo $PROJECT_FILE) # Expand potential ~
+if [ ! -f "$PROJECT_FILE_PATH" ]; then
+  echo "Error: Project file not found at $PROJECT_FILE_PATH"
+  echo "Please create $PROJECT_FILE_PATH containing your Google Cloud project ID."
+  return 1 # Return 1 as we are sourcing
+>>>>>>> c8631520f1893f927bba9dd15aadcf121658a045
 fi
 
 # 2. Set the default gcloud project configuration
 PROJECT_ID_FROM_FILE=$(cat "$PROJECT_FILE_PATH")
 echo "Setting gcloud config project to: $PROJECT_ID_FROM_FILE"
+<<<<<<< HEAD
 gcloud config set project "$PROJECT_ID_FROM_FILE" --quiet
 
 # 3. Export PROJECT_ID
+=======
+# Adding --quiet; set -e will handle failure if the project doesn't exist or access is denied
+gcloud config set project "$PROJECT_ID_FROM_FILE" --quiet
+
+# 3. Export PROJECT_ID (Get from config to confirm it was set correctly)
+>>>>>>> c8631520f1893f927bba9dd15aadcf121658a045
 export PROJECT_ID=$(gcloud config get project)
 echo "Exported PROJECT_ID=$PROJECT_ID"
 
 # 4. Export PROJECT_NUMBER
+<<<<<<< HEAD
+=======
+# Using --format to extract just the projectNumber value
+>>>>>>> c8631520f1893f927bba9dd15aadcf121658a045
 export PROJECT_NUMBER=$(gcloud projects describe ${PROJECT_ID} --format="value(projectNumber)")
 echo "Exported PROJECT_NUMBER=$PROJECT_NUMBER"
 
@@ -49,7 +89,12 @@ echo "Exported PROJECT_NUMBER=$PROJECT_NUMBER"
 export SERVICE_ACCOUNT_NAME=$(gcloud compute project-info describe --format="value(defaultServiceAccount)")
 echo "Exported SERVICE_ACCOUNT_NAME=$SERVICE_ACCOUNT_NAME"
 
+<<<<<<< HEAD
 # 6. Export GOOGLE_CLOUD_PROJECT
+=======
+# 6. Export GOOGLE_CLOUD_PROJECT (Often used by client libraries)
+# This is usually the same as PROJECT_ID
+>>>>>>> c8631520f1893f927bba9dd15aadcf121658a045
 export GOOGLE_CLOUD_PROJECT="$PROJECT_ID"
 echo "Exported GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT"
 
@@ -57,6 +102,7 @@ echo "Exported GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT"
 export GOOGLE_GENAI_USE_VERTEXAI="TRUE"
 echo "Exported GOOGLE_GENAI_USE_VERTEXAI=$GOOGLE_GENAI_USE_VERTEXAI"
 
+<<<<<<< HEAD
 # 10. Export REGION and GOOGLE_CLOUD_LOCATION
 export REGION="us-central1"
 export GOOGLE_CLOUD_LOCATION="$REGION"
@@ -110,6 +156,20 @@ echo "Exported A2A_BASE_URL=$A2A_BASE_URL"
 
 
 # ===================================================================
+=======
+# 10. Export GOOGLE_CLOUD_LOCATION
+export GOOGLE_CLOUD_LOCATION="$GOOGLE_CLOUD_LOCATION"
+echo "Exported GOOGLE_CLOUD_LOCATION=$GOOGLE_CLOUD_LOCATION"
+
+# 11. Export REPO_NAME
+export REPO_NAME="$REPO_NAME"
+echo "Exported REPO_NAME=$REPO_NAME"
+
+# 12. Export REGION
+export REGION="$GOOGLE_CLOUD_LOCATION"
+echo "Exported REGION=$GOOGLE_CLOUD_LOCATION"
+
+>>>>>>> c8631520f1893f927bba9dd15aadcf121658a045
 
 echo ""
 echo "--- Environment setup complete ---"
