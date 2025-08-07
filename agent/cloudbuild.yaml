@@ -1,0 +1,71 @@
+steps:
+# --- Build Step: Forge base familiar image simultaneously ---
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'build-base-familiar'
+  args: ['build', '-t', '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO_NAME}/base-familiar:latest', '.']
+
+# --- Push Step: Store The Artifact ----
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'push-base-familiar'
+  waitFor: ['build-base-familiar']
+  args: ['push', '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO_NAME}/base-familiar:latest']
+
+# --- Deploy Step: Deploy Three Services in Parallel ---
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: 'deploy-fire-familiar'
+  waitFor: ['push-base-familiar']
+  entrypoint: gcloud
+  args:
+    - 'run'
+    - 'deploy'
+    - 'fire-familiar'
+    - '--image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO_NAME}/base-familiar:latest'
+    - '--region=${_REGION}'
+    - '--platform=managed'
+    - '--allow-unauthenticated'
+    - '--command=python'
+    - '--args=-m,fire.agent'
+    - '--set-env-vars=API_SERVER_URL=${_API_SERVER_URL},DB_TOOLS_URL=${_DB_TOOLS_URL},FUNCTION_TOOLS_URL=${_FUNCTION_TOOLS_URL},GOOGLE_GENAI_USE_VERTEXAI=TRUE,GOOGLE_CLOUD_LOCATION=${_REGION},GOOGLE_CLOUD_PROJECT=${_PROJECT_ID},PUBLIC_URL=https://fire-familiar${_A2A_BASE_URL}'
+
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: 'deploy-water-familiar'
+  waitFor: ['push-base-familiar']
+  entrypoint: gcloud
+  args:
+    - 'run'
+    - 'deploy'
+    - 'water-familiar'
+    - '--image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO_NAME}/base-familiar:latest'
+    - '--region=${_REGION}'
+    - '--platform=managed'
+    - '--allow-unauthenticated'
+    - '--command=python'
+    - '--args=-m,water.agent'
+    - '--set-env-vars=API_SERVER_URL=${_API_SERVER_URL},API_TOOLS_URL=${_API_TOOLS_URL},FUNCTION_TOOLS_URL=${_FUNCTION_TOOLS_URL},GOOGLE_CLOUD_PROJECT=${_PROJECT_ID},GOOGLE_GENAI_USE_VERTEXAI=TRUE,GOOGLE_CLOUD_LOCATION=${_REGION},PUBLIC_URL=https://water-familiar${_A2A_BASE_URL}'
+   
+
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: 'deploy-earth-familiar'
+  waitFor: ['push-base-familiar']
+  entrypoint: gcloud
+  args:
+    - 'run'
+    - 'deploy'
+    - 'earth-familiar'
+    - '--image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO_NAME}/base-familiar:latest'
+    - '--region=${_REGION}'
+    - '--platform=managed'
+    - '--allow-unauthenticated'
+    - '--command=python'
+    - '--args=-m,earth.agent'
+    - '--set-env-vars=API_SERVER_URL=${_API_SERVER_URL},FUNCTION_TOOLS_URL=${_FUNCTION_TOOLS_URL},GOOGLE_CLOUD_PROJECT=${_PROJECT_ID},GOOGLE_GENAI_USE_VERTEXAI=TRUE,GOOGLE_CLOUD_LOCATION=${_REGION},PUBLIC_URL=https://earth-familiar${_A2A_BASE_URL}'
+
+substitutions:
+  _REGION: "us-central1"
+  _REPO_NAME: ""
+  _DB_TOOLS_URL: ""
+  _API_TOOLS_URL: ""
+  _FUNCTION_TOOLS_URL: ""
+  _A2A_BASE_URL: ""
+  _API_SERVER_URL: ""
+  _PROJECT_ID: ""

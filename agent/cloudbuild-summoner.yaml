@@ -1,0 +1,37 @@
+steps:
+# --- Build Step: Forge base familiar image simultaneously ---
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'build-summoner-agent'
+  args: ['build', '-t', '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO_NAME}/summoner-agent:latest', '.']
+
+# --- Push Step: Store The Artifact ----
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'push-summoner-agent'
+  waitFor: ['build-summoner-agent']
+  args: ['push', '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO_NAME}/summoner-agent:latest']
+
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: 'deploy-summoner-agent'
+  waitFor: ['push-summoner-agent']
+  entrypoint: gcloud
+  args:
+    - 'run'
+    - 'deploy'
+    - 'summoner-agent'
+    - '--image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO_NAME}/summoner-agent:latest'
+    - '--region=${_REGION}'
+    - '--platform=managed'
+    - '--allow-unauthenticated'
+    - '--command=python'
+    - '--args=-m,summoner.agent'
+    - '--set-env-vars=API_SERVER_URL=${_API_SERVER_URL},FIRE_URL=${_FIRE_URL},EARTH_URL=${_EARTH_URL},WATER_URL=${_WATER_URL},GOOGLE_CLOUD_PROJECT=${_PROJECT_ID},GOOGLE_GENAI_USE_VERTEXAI=TRUE,GOOGLE_CLOUD_LOCATION=${_REGION},PUBLIC_URL=https://summoner-agent${_A2A_BASE_URL}'
+
+substitutions:
+  _REGION: "us-central1"
+  _REPO_NAME: ""
+  _FIRE_URL: ""
+  _WATER_URL: ""
+  _EARTH_URL: ""
+  _A2A_BASE_URL: ""
+  _API_SERVER_URL: ""
+  _PROJECT_ID: ""

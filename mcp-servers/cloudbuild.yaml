@@ -1,0 +1,54 @@
+steps:
+# --- Build Step: Forge Both Containers Simultaneously ---
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'build-api-tools'
+  args: ['build', '-t', '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO_NAME}/api-tools-mcp:latest', './api']
+
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'build-general-tools'
+  args: ['build', '-t', '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO_NAME}/general-tools-mcp:latest', './general']
+
+# --- Push Step: Store Both Artifacts in Parallel ---
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'push-api-tools'
+  waitFor: ['build-api-tools']
+  args: ['push', '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO_NAME}/api-tools-mcp:latest']
+
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'push-general-tools'
+  waitFor: ['build-general-tools']
+  args: ['push', '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO_NAME}/general-tools-mcp:latest']
+
+# --- Deploy Step: Deploy Both Services in Parallel ---
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: 'deploy-api-tools'
+  waitFor: ['push-api-tools']
+  entrypoint: gcloud
+  args:
+    - 'run'
+    - 'deploy'
+    - 'api-tools-mcp'
+    - '--image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO_NAME}/api-tools-mcp:latest'
+    - '--region=${_REGION}'
+    - '--platform=managed'
+    - '--allow-unauthenticated'
+    - '--set-env-vars=API_SERVER_URL=${_API_SERVER_URL}'
+
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: 'deploy-general-tools'
+  waitFor: ['push-general-tools']
+  entrypoint: gcloud
+  args:
+    - 'run'
+    - 'deploy'
+    - 'general-tools-mcp'
+    - '--image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO_NAME}/general-tools-mcp:latest'
+    - '--region=${_REGION}'
+    - '--platform=managed'
+    - '--allow-unauthenticated'
+
+# Define variables to be passed into this build.
+substitutions:
+  _REGION: "us-central1"
+  _REPO_NAME: ""
+  _API_SERVER_URL: ""

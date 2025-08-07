@@ -1,0 +1,2 @@
+cloud-sql-python-connector[pg8000]
+sqlalchemy

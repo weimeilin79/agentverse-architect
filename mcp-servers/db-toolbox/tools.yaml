@@ -1,0 +1,39 @@
+sources:
+  # This section defines the connection to our Cloud SQL for PostgreSQL database.
+  summoner-librarium:
+    kind: cloud-sql-postgres
+    project: "exemplary-point-467417-e6"
+    region: "us-central1"
+    instance: "summoner-librarium-db"
+    database: "familiar_grimoire"
+    user: "summoner"
+    password: "1234qwer"
+
+tools:
+  # This tool replaces the need for a custom Python function.
+  lookup-available-ability:
+    kind: postgres-sql
+    source: summoner-librarium
+    description: "Looks up all known abilities and their damage for a given familiar"
+    parameters:
+      - name: familiar_name
+        type: string
+        description: "The name of the familiar to search for (e.g., 'Fire Elemental')."
+    statement: |
+      SELECT ability_name, damage_points FROM abilities WHERE familiar_name = $1;
+
+  # This tool also replaces a custom Python function.
+  ability-damage:
+    kind: postgres-sql
+    source: summoner-librarium
+    description: "Finds the base damage points for a specific ability by its name."
+    parameters:
+      - name: ability_name
+        type: string
+        description: "The exact name of the ability to look up (e.g., 'inferno_resonance')."
+    statement: |
+      SELECT damage_points FROM abilities WHERE ability_name = $1;
+toolsets:
+   summoner-librarium:
+     - lookup-available-ability
+     - ability-damage

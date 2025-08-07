@@ -1,0 +1,4 @@
+sse-starlette
+starlette
+mcp
+google-adk==1.8.0
