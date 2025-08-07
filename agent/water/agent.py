@@ -61,8 +61,8 @@ forge_channeler = LlmAgent(
       """,
       tools=[toolFunction],
 )
-parallel_agent = ParallelAgent(
-      name='water_elemental_familiar',
+channel_agent = ParallelAgent(
+      name='channel_agent',
       sub_agents=[nexus_channeler, forge_channeler],
       
 )
@@ -94,7 +94,7 @@ power_merger = LlmAgent(
 sequential_pipeline_agent = SequentialAgent(
      name="water_elemental_familiar",
      # Run parallel research first, then merge
-     sub_agents=[parallel_agent, power_merger],
+     sub_agents=[channel_agent, power_merger],
      description="A powerful water familiar that unleashes multiple attacks at once and then combines their power for a final strike."
  )
 
