@@ -57,18 +57,9 @@ def setup_database():
             # Insert lore-based data
             abilities_to_insert = [
                 # Fire Elemental Abilities
-                {"familiar": "Fire Elemental", "ability": "inferno_lash", "damage": 40, "element": "Fire"},
-                {"familiar": "Fire Elemental", "ability": "emberstorm", "damage": 37, "element": "Fire"}, 
-                {"familiar": "Fire Elemental", "ability": "Pyroclasm", "damage": 38, "element": "Fire"}, 
-                
-                # Water Elemental Abilities
-                {"familiar": "Water Elemental", "ability": "leviathan_surge", "damage": 20, "element": "Water"},
-                {"familiar": "Water Elemental", "ability": "cryosea_shatter", "damage": 55, "element": "Ice"},
-                {"familiar": "Water Elemental", "ability": "moonlit_cascade", "damage": 35, "element": "Arcane"},
-                
-                # Earth Elemental Abilities
-                {"familiar": "Earth Elemental", "ability": "seismic_charge", "damage": 5, "element": "Earth"},
-                {"familiar": "Earth Elemental", "ability": "stonefist_barrage", "damage": 30, "element": "Earth"}
+                {"familiar": "Fire Elemental", "ability": "inferno_lash", "damage": 85, "element": "Fire"},
+                {"familiar": "Fire Elemental", "ability": "emberstorm", "damage": 90, "element": "Fire"}, 
+                {"familiar": "Fire Elemental", "ability": "Pyroclasm", "damage": 80, "element": "Fire"}, 
             ]
 
             for ability in abilities_to_insert:

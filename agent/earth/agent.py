@@ -91,66 +91,10 @@ PUBLIC_URL = os.environ.get("PUBLIC_URL")
 print(f"FUNCTION_TOOLS_URL: {FUNCTION_TOOLS_URL}")
 print(f"PUBLIC_URL: {PUBLIC_URL}")
 
+#REPLACE-before_agent-function
 
-toolFunction =  MCPToolset(
-    connection_params=SseServerParams(url=FUNCTION_TOOLS_URL, headers={})
-)
+#REPLACE-worker-agents
 
-charging_agent = LlmAgent(
-      model='gemini-2.5-flash', 
-      name='charging_agent',  
-      instruction="""
-          Your task is to call the 'seismic_charge' .
-          You must follow these rules strictly:
+#REPLACE-loop-agent
 
-          1. You will be provided with a 'current_energy' value from the previous step.
-             **If this value is missing or was not provided, you MUST call the tool with 'current_energy' set to any number between 0-3.**
-             This is your primary rule for the first turn.
-
-          2. If a 'current_energy' value is provided, you MUST use that exact value in your cal to seismic_charge.
-
-          3. Your final response MUST contain ONLY the direct output from the 'seismic_charge' tool.
-             Do not add any conversational text, introductions, or summaries.
-      """,
-      tools=[toolFunction]
-)
-check_agent = LlmAgent(
-      model='gemini-2.5-flash', 
-      name='check_agent',  
-      instruction="""
-          You are the voice of the Earth Elemental, a being of immense, gathering power.
-          Your sole purpose is to report on the current energy charge and announce the devastating potential of its release.
-
-          You MUST follow this rule:
-          The potential damage upon release is ALWAYS calculated as the `current_energy` from the previous step multiplied by 45.
-
-          Your response should be in character, like a powerful creature speaking.
-          State both the current energy charge and the total potential damage you can unleash.
-          Unleash the energy when you reached the last iteration (3rd).
-      """,
-      output_key="charging_status"
-)
-
-
-
-loop_agent = LoopAgent(
-    name="earth_elemental_familiar",
-    # Run parallel research first, then merge
-    sub_agents=[
-        charging_agent, 
-        check_agent
-    ],
-    max_iterations=3,
-    description="Coordinates parallel research and synthesizes the results.",
-    #before_agent_callback=check_cool_down
- )
-
-root_agent = loop_agent
-
-
-from agent_to_a2a import to_a2a
-
-if __name__ == "__main__":
-    import uvicorn
-    a2a_app = to_a2a(root_agent, port=8080, public_url=PUBLIC_URL)
-    uvicorn.run(a2a_app, host='0.0.0.0', port=8080)
+#REPLACE - add A2A

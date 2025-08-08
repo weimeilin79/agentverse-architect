@@ -20,7 +20,7 @@ from google.adk.runners import Runner
 from google.adk.sessions.in_memory_session_service import InMemorySessionService
 from google.adk.a2a.executor.a2a_agent_executor import A2aAgentExecutor
 from google.adk.a2a.utils.agent_card_builder import AgentCardBuilder
-from cooldown_plugin import CoolDownPlugin
+#REPLACE-IMPORT
 
 def to_a2a(
     agent: BaseAgent, *, host: str = "0.0.0.0", port: int = 8080, public_url: str | None = None
@@ -53,7 +53,7 @@ def to_a2a(
         session_service=InMemorySessionService(),
         memory_service=InMemoryMemoryService(),
         credential_service=InMemoryCredentialService(),
-        plugins=[CoolDownPlugin(cooldown_seconds=60)],
+        #REPLACE-PLUGIN
     )
 
   # Create A2A components
