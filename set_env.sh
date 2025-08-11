@@ -88,32 +88,29 @@ echo "Exported DB_NAME=$DB_NAME"
 echo "Exported DB_USER=$DB_USER"
 echo "Exported DB_PASSWORD=$DB_PASSWORD"
 
-# -- Cloud Run Services --
-# If a service is not ready, the gcloud command will fail but the script will continue.
-# The gcloud error will be printed, and the corresponding variable will be empty.
 export FAKE_API_SERVICE_NAME="nexus-of-whispers-api"
 echo "Exported FAKE_API_SERVICE_NAME=$FAKE_API_SERVICE_NAME"
 
-export API_SERVER_URL=$(gcloud run services describe $FAKE_API_SERVICE_NAME --format 'value(status.url)' --region $REGION || true)
+export API_SERVER_URL=$(gcloud run services describe $FAKE_API_SERVICE_NAME --format 'value(status.url)' --region $REGION 2>/dev/null || true)
 echo "Exported API_SERVER_URL=$API_SERVER_URL"
 
-export FIRE_URL=$(gcloud run services describe fire-familiar --platform managed --region $REGION --format 'value(status.url)' || true)
+export FIRE_URL=$(gcloud run services describe fire-familiar --platform managed --region $REGION --format 'value(status.url)' 2>/dev/null || true)
 echo "Exported FIRE_URL=$FIRE_URL"
 
-export WATER_URL=$(gcloud run services describe water-familiar --platform managed --region $REGION --format 'value(status.url)' || true)
+export WATER_URL=$(gcloud run services describe water-familiar --platform managed --region $REGION --format 'value(status.url)' 2>/dev/null || true)
 echo "Exported WATER_URL=$WATER_URL"
 
-export EARTH_URL=$(gcloud run services describe earth-familiar --platform managed --region $REGION --format 'value(status.url)' || true)
+export EARTH_URL=$(gcloud run services describe earth-familiar --platform managed --region $REGION --format 'value(status.url)' 2>/dev/null || true)
 echo "Exported EARTH_URL=$EARTH_URL"
 
-export DB_TOOLS_URL=$(gcloud run services describe toolbox --platform managed --region $REGION --format 'value(status.url)' || true)
+export DB_TOOLS_URL=$(gcloud run services describe toolbox --platform managed --region $REGION --format 'value(status.url)' 2>/dev/null || true)
 echo "Exported DB_TOOLS_URL=$DB_TOOLS_URL"
 
 # Note: If the following gcloud commands fail, the variable will be set to just "/sse".
-export API_TOOLS_URL=$(gcloud run services describe api-tools-mcp --platform managed --region $REGION --format 'value(status.url)' || true)/sse
+export API_TOOLS_URL=$(gcloud run services describe api-tools-mcp --platform managed --region $REGION --format 'value(status.url)' 2>/dev/null || true)/sse
 echo "Exported API_TOOLS_URL=$API_TOOLS_URL"
 
-export FUNCTION_TOOLS_URL=$(gcloud run services describe general-tools-mcp --platform managed --region $REGION --format 'value(status.url)' || true)/sse
+export FUNCTION_TOOLS_URL=$(gcloud run services describe general-tools-mcp --platform managed --region $REGION --format 'value(status.url)' 2>/dev/null || true)/sse
 echo "Exported FUNCTION_TOOLS_URL=$FUNCTION_TOOLS_URL"
 
 export A2A_BASE_URL="-${PROJECT_NUMBER}.${REGION}.run.app"

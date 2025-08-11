@@ -39,6 +39,6 @@ print(f"PUBLIC_URL: {PUBLIC_URL}")
 
 #REPLACE-worker-agents
 
-#REPLACE-sequential-agent
+#REPLACE-parallel-agent
 
 #REPLACE - add A2A

@@ -23,6 +23,9 @@ APP_HOST = os.environ.get("APP_HOST", "0.0.0.0")
 APP_PORT = os.environ.get("APP_PORT",8080)
 API_SERVER_URL = os.environ.get('API_SERVER_URL')
 
+app = Server("Nexus-of-Whispers")
+sse = SseServerTransport("/messages/")
+
 #REPLACE-MAGIC-CORE
 
 
@@ -38,8 +41,6 @@ available_tools = {
 #REPLACE-Runes of Communication
 
 # Create a named MCP Server instance
-app = Server("Nexus-of-Whispers")
-sse = SseServerTransport("/messages/")
 
 # --- MCP Remote Server ---
 async def handle_sse(request):
