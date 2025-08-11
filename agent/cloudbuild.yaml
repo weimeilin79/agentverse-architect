@@ -25,6 +25,7 @@ steps:
     - '--allow-unauthenticated'
     - '--command=python'
     - '--args=-m,fire.agent'
+    - '--min-instances=1'
     - '--set-env-vars=API_SERVER_URL=${_API_SERVER_URL},DB_TOOLS_URL=${_DB_TOOLS_URL},FUNCTION_TOOLS_URL=${_FUNCTION_TOOLS_URL},GOOGLE_GENAI_USE_VERTEXAI=TRUE,GOOGLE_CLOUD_LOCATION=${_REGION},GOOGLE_CLOUD_PROJECT=${_PROJECT_ID},PUBLIC_URL=https://fire-familiar${_A2A_BASE_URL}'
 
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -41,6 +42,7 @@ steps:
     - '--allow-unauthenticated'
     - '--command=python'
     - '--args=-m,water.agent'
+    - '--min-instances=1'
     - '--set-env-vars=API_SERVER_URL=${_API_SERVER_URL},API_TOOLS_URL=${_API_TOOLS_URL},FUNCTION_TOOLS_URL=${_FUNCTION_TOOLS_URL},GOOGLE_CLOUD_PROJECT=${_PROJECT_ID},GOOGLE_GENAI_USE_VERTEXAI=TRUE,GOOGLE_CLOUD_LOCATION=${_REGION},PUBLIC_URL=https://water-familiar${_A2A_BASE_URL}'
    
 
@@ -58,6 +60,7 @@ steps:
     - '--allow-unauthenticated'
     - '--command=python'
     - '--args=-m,earth.agent'
+    - '--min-instances=1'
     - '--set-env-vars=API_SERVER_URL=${_API_SERVER_URL},FUNCTION_TOOLS_URL=${_FUNCTION_TOOLS_URL},GOOGLE_CLOUD_PROJECT=${_PROJECT_ID},GOOGLE_GENAI_USE_VERTEXAI=TRUE,GOOGLE_CLOUD_LOCATION=${_REGION},PUBLIC_URL=https://earth-familiar${_A2A_BASE_URL}'
 
 substitutions:

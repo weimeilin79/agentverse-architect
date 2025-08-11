@@ -24,6 +24,7 @@ steps:
     - '--allow-unauthenticated'
     - '--command=python'
     - '--args=-m,summoner.agent'
+    - '--min-instances=1'
     - '--set-env-vars=API_SERVER_URL=${_API_SERVER_URL},FIRE_URL=${_FIRE_URL},EARTH_URL=${_EARTH_URL},WATER_URL=${_WATER_URL},GOOGLE_CLOUD_PROJECT=${_PROJECT_ID},GOOGLE_GENAI_USE_VERTEXAI=TRUE,GOOGLE_CLOUD_LOCATION=${_REGION},PUBLIC_URL=https://summoner-agent${_A2A_BASE_URL}'
 
 substitutions:
