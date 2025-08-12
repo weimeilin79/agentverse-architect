@@ -4,9 +4,7 @@
 # It provisions Cloud SQL, a fake API on Cloud Run, and sets all necessary permissions.
 # It relies on environment variables set by 'set_env.sh'.
 
-
-# --- 3. Define Prerequisite Directory ---
-
+export PREREQ_DIR="prerequisite"
 
 # --- 1. Create Cloud SQL Instance (The Librarium) ---
 
@@ -26,3 +24,14 @@ else
     echo "    Creation of '$DB_INSTANCE_NAME' started in the background (PID: $SQL_PID)."
 fi
 echo ""
+
+
+# --- 2. Deploy Fake API Server (The Nexus) ---
+echo "--> Deploying the 'Nexus of Whispers' fake API to Cloud Run..."
+gcloud builds submit "${PREREQ_DIR}/fake_api/" \
+    --project=${PROJECT_ID} \
+    --config "${PREREQ_DIR}/fake_api/cloudbuild.yaml" \
+    --substitutions=_REGION="${REGION}",_REPO_NAME="${REPO_NAME}",_SERVICE_NAME="${FAKE_API_SERVICE_NAME}"
+
+# Retrieve the URL after deployment. Redirect error to /dev/null if service is not found yet.
+FAKE_API_URL=$(gcloud run services describe ${FAKE_API_SERVICE_NAME} --platform=managed --region=${REGION} --format='value(status.url)' --project=${PROJECT_ID} 2>/dev/null || true)
