@@ -35,3 +35,12 @@ gcloud builds submit "${PREREQ_DIR}/fake_api/" \
 
 # Retrieve the URL after deployment. Redirect error to /dev/null if service is not found yet.
 FAKE_API_URL=$(gcloud run services describe ${FAKE_API_SERVICE_NAME} --platform=managed --region=${REGION} --format='value(status.url)' --project=${PROJECT_ID} 2>/dev/null || true)
+
+
+echo ""
+echo "------------------------------------------------------------"
+echo "✅ Environment preparation complete!"
+echo ""
+echo "Nexus of Whispers API URL: ${FAKE_API_URL}"
+echo "Librarium (Cloud SQL) Instance: ${DB_INSTANCE_NAME}"
+echo "------------------------------------------------------------"
