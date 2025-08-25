@@ -31,6 +31,7 @@ steps:
     - '--image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO_NAME}/api-tools-mcp:latest'
     - '--region=${_REGION}'
     - '--platform=managed'
+    - '--labels=codelab=agentverse'
     - '--allow-unauthenticated'
     - '--set-env-vars=API_SERVER_URL=${_API_SERVER_URL}'
     - '--min-instances=1'
@@ -47,6 +48,7 @@ steps:
     - '--image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO_NAME}/general-tools-mcp:latest'
     - '--region=${_REGION}'
     - '--platform=managed'
+    - '--labels=codelab=agentverse'
     - '--allow-unauthenticated'
     - '--min-instances=1'
 
