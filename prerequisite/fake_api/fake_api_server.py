@@ -27,13 +27,13 @@ def cryosea_shatter():
     """Represents a powerful ice spell from an external source."""
     # This endpoint is kept simple, as requested.
     # The cooldown logic is handled by the plugin calling the /cooldown endpoints.
-    return JSONResponse(content={"ability": "cryosea_shatter", "damage_points": 40})
+    return JSONResponse(content={"ability": "cryosea_shatter", "damage_points": 80})
 
 @app.post("/moonlit_cascade")
 def moonlit_cascade():
     """Represents a mystical arcane spell from an external source."""
     # This endpoint is also kept simple.
-    return JSONResponse(content={"ability": "moonlit_cascade", "damage_points": 50})
+    return JSONResponse(content={"ability": "moonlit_cascade", "damage_points": 105})
 
 
 
