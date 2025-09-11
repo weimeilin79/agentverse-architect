@@ -22,7 +22,7 @@ steps:
     - '--region=${_REGION}'
     - '--platform=managed'
     - '--allow-unauthenticated'
-    - '--labels=codelab=agentverse'
+    - '--labels=dev-tutorial=codelab-agentverse'
     - '--command=python'
     - '--args=-m,summoner.agent'
     - '--min-instances=1'
