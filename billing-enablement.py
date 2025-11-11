@@ -4,6 +4,7 @@ import time
 from google.cloud import billing_v1
 from google.api_core import exceptions
 
+# --- No changes to the functions in this section ---
 
 def get_project_id_from_file():
     """Reads the project ID from the file created by the init.sh script."""
@@ -40,8 +41,6 @@ def enable_billing_api(project_id):
         print(f"\nError enabling Cloud Billing API: {e.stderr}")
         return False
 
-
-
 def get_billing_accounts(client):
     """Fetches a list of billing accounts with improved error handling."""
     print("Fetching billing accounts...")
@@ -50,34 +49,24 @@ def get_billing_accounts(client):
         return list(accounts)
     except exceptions.PermissionDenied as e:
         error_message = e.message.lower()
-        # Check for the ambiguous "API not used" message
         if "api has not been used" in error_message or "service is disabled" in error_message:
-            # THIS IS THE NEW, MORE HELPFUL LOGIC
             print("\nWarning: Received a 'Permission Denied' error that looks like a disabled API.")
             print("This can be a temporary propagation delay OR a permanent IAM permissions issue.")
-            print("Ensure the active user has the 'Billing Account User' (roles/billing.user) role on the Organization or Billing Account.")
-            return "API_DISABLED_OR_NO_PERMISSION" # Return a more specific status
-
-        # Handle other, clearer permission errors
+            return "API_DISABLED_OR_NO_PERMISSION"
         else:
             print(f"\nError: A clear Permission Denied error occurred. Message: {e.message}")
-            print("Please ensure the active user has the required 'roles/billing.user' IAM role.")
             return "PERMISSION_DENIED"
     except Exception as e:
         print(f"\nAn unexpected error occurred while fetching accounts: {e}")
         return "UNEXPECTED_ERROR"
-
-
 
 def link_project_to_billing(client, target_project_id, billing_account_info):
     """Links a project and then verifies that the link is active."""
     if not target_project_id:
         print("\nError: Cannot link project to billing. The provided Project ID is empty.")
         return
-
     project_name = f"projects/{target_project_id}"
     billing_account_name = billing_account_info.name
-
     try:
         print(f"\nChecking current billing status for project '{target_project_id}'...")
         current_billing_info = client.get_project_billing_info(name=project_name)
@@ -115,10 +104,10 @@ def link_project_to_billing(client, target_project_id, billing_account_info):
         except Exception as e:
             print(f"An unexpected error occurred during verification: {e}")
         time.sleep(wait_seconds)
-
     print(f"\nWarning: Could not verify billing link was active after {max_retries} attempts.")
 
 
+# --- MAIN BLOCK ---
 
 if __name__ == "__main__":
     print("--- Starting GCP Billing Management Script ---")
@@ -144,9 +133,31 @@ if __name__ == "__main__":
                         break
                     wait_seconds *= 1.5
 
+        if isinstance(accounts_result, list) and not accounts_result:
+            print("\nNo billing accounts found immediately. This might be a propagation delay.")
+            print("Will check again every 20 seconds for 2 minutes...")
+            max_wait_retries = 6
+            for i in range(max_wait_retries):
+                print(f"Waiting... (Attempt {i+1}/{max_wait_retries})")
+                time.sleep(20)
+                accounts_result = get_billing_accounts(billing_client)
+                if isinstance(accounts_result, list) and accounts_result:
+                    print("Success! Found billing accounts after a delay.")
+                    break
+
         if isinstance(accounts_result, list):
             if not accounts_result:
-                print("\nScript finished. No billing accounts were found. This could also be a permissions issue.")
+                # --- THIS IS THE NEW, CODELAB-SPECIFIC MESSAGE ---
+                print("\n----------------- ACTION REQUIRED -----------------")
+                print("Waited for 2 minutes, but no active billing account was found for your user.")
+                print("This usually happens if the free trial credit for this event has not been")
+                print("activated or is still being processed.")
+                print("\n**Next Steps:**")
+                print("  1. Please double-check the instructions from the event organizer and ensure")
+                print("     you have CLAIMED YOUR CREDIT.")
+                print("  2. If you have just claimed it, please wait another minute for it to apply.")
+                print("  3. Once confirmed, please run the `./init.sh` script again.")
+                print("---------------------------------------------------")
             else:
                 open_accounts = [acc for acc in accounts_result if acc.open]
                 if not open_accounts:
